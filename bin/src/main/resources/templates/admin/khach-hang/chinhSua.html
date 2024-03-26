@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{admin/layouts/index}"
+>
+<head>
+<meta charset="UTF-8">
+<title>Trang chủ</title>
+	 <title>Chinh sửa khách hàng</title>
+</head>
+<body>
+	<div class="container-fluid" layout:fragment="content">
+					<div class="row ">
+						<div class="col-md-12">
+							<h1 class="h3 mb-2 text-gray-800">QUẢN LÝ KHÁCH HÀNG</h1>
+						</div>
+						
+					</div>
+                    <div class="row">
+                    	<div class="col-md-12">
+                    	<div class="card shadow ">
+                        <div class="card-header  py-3">
+                        	<div class="row">
+                        		
+                        	
+                            <div class="col-md-6 pt-3">
+                            	<th:block th:if="${message == 'create_success'}">
+									<span class="text-success">Thêm mới thành công !</span>
+								</th:block>
+								<th:block th:if="${message == 'update_success'}">
+									<span class="  text-success">Cập nhật thành công !</span>
+								</th:block>
+								<th:block th:if="${message == 'create_address_success'}">
+											<span class="  text-success">Thêm mới địa chi thành công !</span>
+								</th:block>
+								<th:block th:if="${message == 'duplicate_email'}">
+									<span class="  text-danger">Email [[${email}]] đã tồn tại !</span>
+								</th:block>
+								<th:block th:if="${message == 'update_duplicate_email'}">
+											<span class="text-danger ">Email [[${email}]] đã được đăng ký !</span>
+								</th:block>
+                            </div>
+							<div class="col-md-6 pt-4">
+								<strong>Danh sách địa chỉ khách hàng</strong>
+							</div>
+							</div>
+                        </div>
+                        <div class="  card-body">
+                        	<div class="row">
+                            <form class="col-md-6 pt-3" id="formSubmitKhachHang" method="get" th:object="${model}">
+							  <div class="form-group pt-2">
+							    <label for="email" >Email <span class="text-danger">(*)</span> </label>
+							    <input type="email" th:field="*{email}" name="email" class="form-control" id="email" aria-describedby="emailHelp"  >
+							  </div>
+							  <div class="form-group pt-2">
+							    <label for="matKhau">Mật khẩu<span class="text-danger">(*)</span> </label>
+							    <input type="text" th:field="*{matKhau}" name="matKhau" class="form-control" id="matKhau" >
+							  </div>
+							  <div class="form-group pt-2">
+							    <label for="hoTen">Họ tên<span class="text-danger">(*)</span> </label>
+							    <input type="text" class="form-control" name="hoTen" th:field="*{hoTen}" id="hoTen" aria-describedby="emailHelp" >
+							  </div>
+							  <div class="form-group pt-2">
+							    <label for="soDienThoai">Số điện thoại<span class="text-danger">(*)</span> </label>
+							    <input type="text" class="form-control" name="soDienThoai" th:field="*{soDienThoai}" id="soDienThoai" >
+							  </div>
+							  <div class="form-group pt-2">
+							  <label for="trangThai">Trang thái<span class="text-danger">(*)</span> </label>
+							    <select class="custom-select" id="trangThai" th:field="*{trangThai}" >
+															    <option  value="1" selected="selected">Đang hoạt động</option>
+															    <option  value="0">Ngừng hoạt động</option>
+								</select>
+							  </div>
+							  <div class="form-group pt-2">
+							    <input type="hidden" class="form-control"  th:field="*{id}"  id="khachHangId">
+							  </div>
+							  <th:block th:if="*{id == null}">
+							  		<button type="submit" id="btnCapNhatHoacThemMoiKhachHang" class="btn btn-primary">Tạo</button>
+							  </th:block>
+							  <th:block th:if="*{id != null}">
+							  		<button type="submit" id="btnCapNhatHoacThemMoiKhachHang" class="btn btn-primary">Cập nhật</button>
+							  </th:block>
+								</form>
+								
+								
+								<div class="col-md-6">
+									<div class="row">
+									<th:block th:if="${model.id != null}">
+										<div class="col-md-10">
+										
+										<button  type="button" data-toggle="modal" data-target="#staticBackdrop"
+														class="dt-button buttons-html5 btn btn-white btn-success btn-bold"
+														 title='Thêm mới'>
+														<span> 
+															<i class="fa fa-plus-circle bigger-110 purple"></i>
+														</span>
+										</button>
+										</div>
+										<div class="col-md-2">
+										
+										<button id="btnDelete" type="button"  onclick="xacNhanXoaDiaChi()"
+														class="dt-button buttons-html5 btn btn-white btn-danger btn-bold"
+														data-toggle="tooltip" title='Xóa'>
+														<span> 
+														<i class="fas fa-trash-alt"></i>
+														</span>
+										</button>
+										
+									</div>
+									</th:block>
+									 <th:block th:if="${model.id == null}">
+												
+									 </th:block>
+									</div>
+									<div class="row pt-3">
+										<div class="col-md-12">
+									
+                        			<div class="table-responsive">
+                                <table class="table table-bordered"  width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                        	<th><input  type="checkbox"
+												value="" id="checkAllDiachi" name="checkAllDiachi" /></th>
+                                            <th>STT</th>
+                                            <th>Địa chỉ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody th:each="item : ${model.listDiaChi}" >
+                                           <tr >
+                                        		<td>
+                                        			<input  type="checkbox" th:value="*{item.id}" id="checkbox_*{item.id}" />
+                                        		</td>
+	                                            <td>[[${itemStat.index}]]</td>
+	                                            <td>[[*{item.diaChi}]]</td>
+	                                       </tr>
+                                    </tbody>
+                                </table>
+                        		</div>
+                        		</div>
+									</div>
+								</div>
+								
+								</div>
+								
+								
+                        </div>
+                    </div>
+                    	</div>
+                    	
+                    	
+                    	<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+						  <div class="modal-dialog">
+						    <div class="modal-content">
+						      <div class="modal-header">
+						        <h5 class="modal-title" id="staticBackdropLabel">Thêm mới địa chỉ</h5>
+						        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						          <span aria-hidden="true">&times;</span>
+						        </button>
+						      </div>
+						      <div class="modal-body">
+						      		<form class="col-md-12" id="formSubmitDiaChi"  th:object="${model}">
+									<div class="row pt-4">
+										<div class="col-md-6">
+											<div class="form-group pt-2">
+								    		 <label for="city">Thành phố/Tỉnh</label>
+										  	  <select name="city" class="custom-select" id="city">
+											   			 <option selected="selected">---Chọn thành phố---</option>
+											  </select>
+										  </div>
+										  <div class="form-group pt-2">
+								    		 <label for="district">Quận/Huyện</label>
+										  	  <select name="district" class="custom-select" id="district">
+											   			 <option selected="selected">---Chọn thành huyện---</option>
+											  </select>
+										  </div>
+										</div>
+										<div class="col-md-6">
+										<div class="form-group pt-2">
+							    		 <label for="ward">Xã/Phường</label>
+									  	  <select name="ward" class="custom-select" id="ward">
+										   			 <option selected="selected">---Chọn xã---</option>
+										  </select>
+									  </div>
+									  <div class="form-group pt-2">
+							    		 <label for="soNha">Số nhà</label>
+										  <input name="soNha" type="text" class="form-control"  id="soNha">
+									  </div>
+									  </div>
+									</div>	
+									  
+									   <input  type="hidden" name="khachHangId" class="form-control"  th:value="${model.id}" >
+									  <div class="form-group pt-2">
+							  			</div>	
+									  <button type="submit" id="btnThemMoiDiaChi" class="btn btn-primary">Thêm</button>	
+									  
+								</form>
+						      </div>
+						      <div class="modal-footer">
+						      </div>
+						    </div>
+						  </div>
+						</div>
+                    	
+                    	
+                    </div>
+                    
+					
+					
+					
+					
+	</div>
+</body>
+
+
+</html>

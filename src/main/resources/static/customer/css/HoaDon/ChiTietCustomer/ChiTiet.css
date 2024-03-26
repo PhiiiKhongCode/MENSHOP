@@ -1,0 +1,86 @@
+body {
+    margin-top: 20px;
+}
+
+.timeline-steps {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap
+}
+
+.timeline-steps .timeline-step {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin: 1rem
+}
+
+@media (min-width: 768px) {
+    .timeline-steps .timeline-step:not(:last-child):after {
+        content: "";
+        display: block;
+        border-top: .25rem dotted #3b82f6;
+        width: 3.46rem;
+        position: absolute;
+        left: 7.5rem;
+        top: .3125rem
+    }
+
+    .timeline-steps .timeline-step:not(:first-child):before {
+        content: "";
+        display: block;
+        border-top: .25rem dotted #3b82f6;
+        width: 3.8125rem;
+        position: absolute;
+        right: 7.5rem;
+        top: .3125rem
+    }
+}
+
+.timeline-steps .timeline-content {
+    width: 10rem;
+    text-align: center
+}
+
+.timeline-steps .timeline-content .inner-circle {
+    border-radius: 1.5rem;
+    height: 1rem;
+    width: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #3b82f6
+}
+
+.timeline-steps .timeline-content .inner-circle:before {
+    content: "";
+    background-color: #3b82f6;
+    display: inline-block;
+    height: 3rem;
+    width: 3rem;
+    min-width: 3rem;
+    border-radius: 6.25rem;
+    opacity: .5
+}
+.table-wrapper {
+    max-height: 400px;
+    overflow-y: auto;
+}
+.image-container, .form-container {
+    border: 1px solid #ccc;
+    border-radius: 10px; /* Để bo góc viền */
+    padding: 10px; /* Để tạo khoảng cách giữa viền và nội dung */
+    margin-bottom: 20px; /* Để tạo khoảng cách giữa các phần tử */
+}
+.upload-btn {
+    border-radius: 30px; /* Bo góc để tạo hình dạng trụ */
+    padding: 15px 25px; /* Độ dài và chiều cao của nút */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng */
+    transition: all 0.3s ease; /* Hiệu ứng chuyển đổi */
+}
+
+.upload-btn:hover {
+    transform: translateY(-2px); /* Hiệu ứng nổi */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Hiệu ứng bóng */
+}

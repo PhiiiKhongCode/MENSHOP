@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{dashboard/index.html}">
+
+<head></head>
+
+<body>
+    <section layout:fragment="content">
+        <div th:if="${messageSuccess != null}" class="alert alert-success" role="alert">
+            <i th:text="${messageSuccess}"></i>
+        </div>
+        <div th:if="${messageDanger != null}" class="alert alert-danger" role="alert">
+            <i th:text="${messageDanger}"></i>
+        </div>
+        <form th:action="@{/admin/product/generateProductDetails}" method="post" enctype="multipart/form-data"
+            th:object="${sanPhamManageDTO}">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"
+                            th:text="${sanPhamManageDTO.isEdit? 'Chỉnh sửa thông tin sản phẩm' : 'Thêm mới sản phẩm'}">
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" th:field="*{isEdit}" />
+                        <div class="form-group mt-2">
+                            <input type="text" class="form-control" name="productId" id="productId"
+                                aria-describedby="productId" placeholder="productId" th:field="*{sanPhamId}" readonly
+                                hidden />
+                        </div>
+                        <div class="col-sm-12 row">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label for="tenSanPham">Tên sản phẩm:</label>
+                                    <input type="text" class="form-control" name="tenSanPham" th:classappend="${#fields.hasErrors('tenSanPham')}? is-invalid : ''"
+                                        id="tenSanPham" aria-describedby="productNameHId" placeholder="Tên sản phẩm"
+                                        th:field="*{tenSanPham}" />
+                                    <small id="tenSanPham" th:if="${#fields.hasErrors('tenSanPham')}"
+                                        th:class="${#fields.hasErrors('tenSanPham')}? invalid-feedback : ''"
+                                        th:errors="*{tenSanPham}"></small>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="giaHienHanh">Giá hiện hành:</label>
+                                    <input type="number" class="form-control" name="giaHienHanh" id="giaHienHanh"
+                                        th:classappend="${#fields.hasErrors('giaHienHanh')}? is-invalid : ''"
+                                        aria-describedby="giaHienHanhHId" placeholder="Giá bán" th:field="*{giaHienHanh}" />
+                                    <small id="giaHienHanh" th:if="${#fields.hasErrors('giaHienHanh')}"
+                                        th:class="${#fields.hasErrors('giaHienHanh')}? invalid-feedback : ''"
+                                        th:errors="*{giaHienHanh}"></small>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="loaiHangId">Loại sản phẩm:</label>
+                                    <select class="form-control" name="loaiHangId" id="loaiHangId"
+                                        th:classappend="${#fields.hasErrors('loaiHangId')}? is-invalid : ''"
+                                        th:field="*{loaiHangId}">
+                                        <option value="-1" selected>Chưa chọn</option>
+                                        <option th:each="item : ${lstLoaiHang}" th:value="${item.id}"
+                                            th:text="${item.tenLoaiHang}"
+                                            th:selected="${item.id == sanPhamManageDTO.loaiHangId}"></option>
+                                    </select>
+                                    <small id="loaiHangId" th:if="${#fields.hasErrors('loaiHangId')}"
+                                        th:class="${#fields.hasErrors('loaiHangId')}? invalid-feedback : ''"
+                                        th:errors="*{loaiHangId}"></small>
+                                </div>
+                                <div class="col-sm-4 mt-3">
+                                    <label for="kieuDangId">Tên kiểu dáng:</label>
+                                    <select class="form-control" name="kieuDangId" id="kieuDangId"
+                                        th:classappend="${#fields.hasErrors('kieuDangId')}? is-invalid : ''"
+                                        th:field="*{kieuDangId}">
+                                        <option value="-1" selected>Chưa chọn</option>
+                                        <option th:each="item : ${lstKieuDang}" th:value="${item.id}"
+                                            th:text="${item.tenKieuDang}" th:selected="${item.id == sanPhamManageDTO.kieuDangId}">
+                                        </option>
+                                    </select>
+                                    <small id="kieuDangId" th:if="${#fields.hasErrors('kieuDangId')}"
+                                        th:class="${#fields.hasErrors('kieuDangId')}? invalid-feedback : ''"
+                                        th:errors="*{kieuDangId}"></small>
+                                </div>
+                                <div class="col-sm-4 mt-3">
+                                    <label for="chatLieuId">Tên chất liệu:</label>
+                                    <select class="form-control" name="chatLieuId" id="chatLieuId"
+                                        th:classappend="${#fields.hasErrors('chatLieuId')}? is-invalid : ''"
+                                        th:field="*{chatLieuId}">
+                                        <option value="-1" selected>Chưa chọn</option>
+                                        <option th:each="item : ${lstChatLieu}" th:value="${item.id}"
+                                            th:text="${item.tenChatLieu} "
+                                            th:selected="${item.id == sanPhamManageDTO.chatLieuId}"></option>
+                                    </select>
+                                    <small id="chatLieuId" th:if="${#fields.hasErrors('chatLieuId')}"
+                                        th:class="${#fields.hasErrors('chatLieuId')}? invalid-feedback : ''"
+                                        th:errors="*{chatLieuId}"></small>
+                                </div>
+                                <div class="col-sm-4 mt-3">
+                                    <label for="phongCachId">Tên phong cách:</label>
+                                    <select class="form-control" name="phongCachId" id="phongCachId"
+                                        th:classappend="${#fields.hasErrors('phongCachId')}? is-invalid : ''"
+                                        th:field="*{phongCachId}">
+                                        <option value="-1" selected>Chưa chọn</option>
+                                        <option th:each="item : ${lstPhongCach}" th:value="${item.id}"
+                                            th:text="${item.tenPhongCach}"
+                                            th:selected="${item.id == sanPhamManageDTO.phongCachId}"></option>
+                                    </select>
+                                    <small id="phongCachId" th:if="${#fields.hasErrors('phongCachId')}"
+                                        th:class="${#fields.hasErrors('phongCachId')}? invalid-feedback : ''"
+                                        th:errors="*{phongCachId}"></small>
+                                </div>
+                                <div class="col-sm-12 mt-3">
+                                    <label for="moTa">Mô tả sản phẩm:</label>
+                                    <textarea class="form-control" name="moTa" id="moTa" th:field="*{moTa}" placeholder="Mô tả chi tiết sản phẩm..." cols="30" rows="10" maxlength="10000" 
+                                    th:classappend="${#fields.hasErrors('moTa')}? is-invalid : ''" aria-describedby="moTaHId"></textarea>
+                                    <small id="moTa" th:if="${#fields.hasErrors('moTa')}"
+                                        th:class="${#fields.hasErrors('moTa')}? invalid-feedback : ''"
+                                        th:errors="*{moTa}"></small>
+                                </div>
+                            </div>
+                            <!-- <img th:src="${imageDTO.imageUrl!= null ? '/admin/image/images/' + imageDTO.imageUrl : '/admin/image/images/default.png'}"
+                                    id="image" width="90%" class="img-fluid" />
+                                <div class="form-group">
+                                    <label for="bottleImage">image file:</label>
+                                    <input type="file" name="imgFile" id="fileinput" class="form-control-file"
+                                        placeholder="bottle image" onchange="chooseFile(this)"
+                                        aria-describedby="bottleImageHid" multiple/>
+                                    <input type="text" th:value="${imageDTO.imageUrl}" th:field="*{imageUrl}" multiple
+                                        />
+                                </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold">
+                        Kích cỡ và màu sắc
+                    </h6>
+                </div>
+                <div class="col-sm-12 row">
+                    <div class="col-sm-6 mt-3">
+                        <label for="kichCoIds">Tên kích cỡ:</label>
+                        <select class="selectpicker" name="kichCoIds" id="kichCoIds" th:field="*{kichCoIds}"
+                            multiple>
+                            <option th:each="item : ${lstKichCo}" th:value="${item.id}"
+                                th:text="${item.tenKichCo}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-sm-6 mt-3">
+                        <label for="mauSacIds">Tên màu sắc:</label>
+                        <select class="selectpicker" name="mauSacIds" id="mauSacIds" th:field="*{mauSacIds}"
+                            multiple>
+                            <option th:each="item : ${lstMauSac}" th:value="${item.id}"
+                                th:text="${item.tenMauSac}"></option>
+                        </select>
+                    </div>
+                    <div class="col-sm-12 mt-3 mb-3">
+                        <div class="float-right">
+                            <button type="submit" class="btn btn-primary">
+                            <img th:src="@{/img/icons/arrow-down.svg}" aria-label="chi tiết"/><span> Tạo</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="card-body card shadow" 
+        th:if="${not #lists.isEmpty(dataGen)}"
+        >
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="dataTable" width="100%"
+                    cellspacing="0">
+                    <thead class="text-nowrap">
+                        <tr>
+                            <th>
+                                <div class="checkbox-wrapper-30">
+                                    <span class="checkbox">
+                                        <input type="checkbox" onclick="toggle(this)" />
+                                        <svg>
+                                            <use xlink:href="#checkbox-30" class="checkbox"></use>
+                                        </svg>
+                                    </span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+                                        <symbol id="checkbox-30" viewBox="0 0 22 22">
+                                            <path fill="none" stroke="currentColor"
+                                                d="M5.5,11.3L9,14.8L20.2,3.3l0,0c-0.5-1-1.5-1.8-2.7-1.8h-13c-1.7,0-3,1.3-3,3v13c0,1.7,1.3,3,3,3h13 c1.7,0,3-1.3,3-3v-13c0-0.4-0.1-0.8-0.3-1.2" />
+                                        </symbol>
+                                    </svg>
+                                </div>
+                            </th>
+                            <th>Tên sản phẩm</th>
+                            <th>Số lượng</th>
+                            <th>Giá hiện hành</th>
+                            <th>Kích cỡ</th>
+                            <th>Màu sắc</th>
+                            <th>Kiểu dáng</th>
+                            <th>Chất liệu</th>
+                            <th>Loại hàng</th>
+                            <th>Phong cách</th>
+                            <!-- <th>Mô tả</th> -->
+                            <th>Người tạo</th>
+                            <th>Ngày tạo</th>
+                            <th>Người chỉnh sửa</th>
+                            <th>Ngày chỉnh sửa</th>
+                            <th>Có hiển thị</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="item, istat : ${dataGen}">
+                            <th>
+                                <div class="checkbox-wrapper-30">
+                                    <span class="checkbox">
+                                        <input type="checkbox" name="productIds" th:id="openBoxCreateImgsId + ${item.id}"
+                                            th:value="${item.id}" onclick="openBoxCreateImgs(this.getAttribute('th:id'))"/>
+                                        <svg>
+                                            <use xlink:href="#checkbox-30" class="checkbox"></use>
+                                        </svg>
+                                    </span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+                                        <symbol id="checkbox-30" viewBox="0 0 22 22">
+                                            <path fill="none" stroke="currentColor"
+                                                d="M5.5,11.3L9,14.8L20.2,3.3l0,0c-0.5-1-1.5-1.8-2.7-1.8h-13c-1.7,0-3,1.3-3,3v13c0,1.7,1.3,3,3,3h13 c1.7,0,3-1.3,3-3v-13c0-0.4-0.1-0.8-0.3-1.2" />
+                                        </symbol>
+                                    </svg>
+                                </div>
+                            </th>
+                            <td th:text="${item.sanPham.tenSanPham}"></td>
+                            <td th:text="${item.soLuong}"></td>
+                            <td th:text="${item.sanPham.giaHienHanh}"></td>
+                            <td th:text="${item.kichCo.tenKichCo}"></td>
+                            <td th:text="${item.mauSac.tenMauSac}"></td>
+                            <td th:text="${item.sanPham.kieuDang.tenKieuDang}"></td>
+                            <td th:text="${item.sanPham.chatLieu.tenChatLieu}"></td>
+                            <td th:text="${item.sanPham.loaiHang.tenLoaiHang}"></td>
+                            <td th:text="${item.sanPham.phongCach.tenPhongCach}"></td>
+                            <!-- <td th:text="${item.sanPham.moTa}"></td> -->
+                            <td th:text="${item.nguoiTao}"></td>
+                            <td th:text="${item.ngayTao}"></td>
+                            <td th:text="${item.nguoiChinhSua}"></td>
+                            <td th:text="${item.ngayChinhSua}"></td>
+                            <td class="text-center">
+                                <div class="custom-control custom-switch align-items-center">
+                                    <input type="checkbox" class="custom-control-input"
+                                        th:id="customSwitch + ${item.id}" th:data-id="${item.id}"
+                                        th:checked="${item.coHienThi? 'true' : 'false'}"
+                                        onclick="changeIsShowProductDetail('changeIsShowFormAddOrEdit',this.getAttribute('id'),this.getAttribute('data-id'), this.getAttribute('checked'))" />
+                                    <label class="custom-control-label"
+                                        th:for="customSwitch +  ${item.id}"></label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <a class="btn btn-outline-info btn-sm" id="info"><img
+                                            th:src="@{/img/icons/info.svg}"></a>
+                                    <a class="btn btn-outline-primary btn-sm"
+                                        th:href="@{'/admin/product/edit/' + ${item.id}}"><img
+                                            th:src="@{/img/icons/edit.svg}"></a>
+                                    <a class="btn btn-outline-danger btn-sm" th:data-id="${item.id}"
+                                        th:data-name="${item.sanPham.tenSanPham}"
+                                        onclick="showConfirmModalDialog(this.getAttribute('data-id'), this.getAttribute('data-name'))"><img
+                                            th:src="@{/img/icons/trash.svg}"></a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-body">
+
+        </div>
+        <!-- Modal delete -->
+        <div class="modal fade" id="confirmationId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Xác nhận xóa sản phẩm</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">Bạn có muốn xóa sản phẩm này?</div>
+                    <div class="modal-footer">
+                        <a type="button" class="btn btn-outline-dark" data-dismiss="modal">Đóng</a>
+                        <a id="yesOptionDeleteModalId" type="button" class="btn btn-danger">Xóa</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal isShow product -->
+        <div class="modal fade" id="isShowModalId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Xác nhận thay đổi trạng thái hiển thị sản phẩm</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Bạn có muốn thay đổi trạng thái hiển thị của sản phẩm đã chọn?
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" id="notChangeIsShow" class="btn btn-outline-dark" data-dismiss="modal">Đóng</a>
+                        <a id="yesOptionChangeIsShow" type="button" class="btn btn-danger">Đồng ý</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <script>
+            const preview = (file) => {
+                const fr = new FileReader();
+                fr.onload = () => {
+                    const img = document.createElement("img");
+                    img.src = fr.result; // String Base64
+                    img.alt = file.name;
+                    img.style.maxHeight = "120px";
+                    img.style.margin = "5px";
+                    document.querySelector("#preview").append(img);
+                };
+                fr.readAsDataURL(file);
+            };
+
+            document.querySelector("#files").addEventListener("change", (ev) => {
+                if (!ev.target.files) return; // Do nothing.
+                [...ev.target.files].forEach(preview);
+            });
+        </script> -->
+    </section>
+</body>
+
+</html>
